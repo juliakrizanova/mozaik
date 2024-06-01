@@ -1140,6 +1140,9 @@ class MeasureNaturalImagesWithEyeMovement(VisualExperiment):
             'stimulus_duration' : float,
             'num_trials' : int,
             'size' : float,
+            'data_dir': str,
+            'data_filename': str,
+            'stim_dir': str,
     })  
 
     
@@ -1171,15 +1174,16 @@ class MeasureNaturalImagesWithEyeMovement(VisualExperiment):
         import h5py
         import os
         import numpy as np
-        basedir = "/projects/nextcloud_data/csng_test/files/Latency_shortening"
-        datadir = os.path.join(basedir, "data")
-        data_filename = "HIME_20140904_rec5_blk2_eye_position.hdf5"
-        stimdir = os.path.join(basedir, "stimuli")
+        # basedir = "/projects/nextcloud_data/csng_test/files/Latency_shortening"
+        # basedir = "/home/rozsa/dev/Julia_analysis/Latency_shortening"
+        # data_dir = os.path.join(basedir, "data")
+        # data_filename = "HIME_20140904_rec5_blk2_eye_position.hdf5"
+        # stim_dir = os.path.join(basedir, "stimuli")
 
 
         for k in range(0, self.parameters.num_trials):
             trial_label = f"/trial{k+1}"
-            with h5py.File(f"{datadir}/{data_filename}", 'r') as data:
+            with h5py.File(f"{self.parameters.data_dir}/{self.parameters.data_filename}", 'r') as data:
                 stimsetname = data['/stimulus_set_name'][...].astype('str')
                 # TODO: vybrat start_time, end_time, img_on, img_off time -> z coho vypocitam periodu (tym,ze to este vydelim nr of samples), 
                 # odfiltrujem pozicie mimo ukazovania obrazku
@@ -1190,7 +1194,7 @@ class MeasureNaturalImagesWithEyeMovement(VisualExperiment):
                 #pouzit t_start, t_end
                 period = (t_end - t_start) / num_samples
                 success = data[trial_label+"/success"][...]
-                image_id = f"{stimdir}/{stimsetname}/{data[trial_label+'/stimulus_image_id'][...]}.png"
+                image_id = f"{self.parameters.stim_dir}/{stimsetname}/{data[trial_label+'/stimulus_image_id'][...]}.png"
         
                 if not(success):
                     continue
